@@ -5,14 +5,11 @@ const { MongoClient, ObjectId } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
-
 // middle wares
 app.use(cors());
 app.use(express.json());
-
 // const uri = "mongodb://0.0.0.0:27017/";
 const uri = `mongodb+srv://${process.env.DbUser}:${process.env.DbPassword}@cluster0.8thupxf.mongodb.net/?retryWrites=true&w=majority`;
-
 const client = new MongoClient(uri);
 const DbConnect = async () => {
   try {
@@ -23,9 +20,7 @@ const DbConnect = async () => {
   }
 };
 DbConnect();
-
 const AllBilligs = client.db("PowerHack").collection("Billings");
-
 app.get("/billing-list", async (req, res) => {
   const search = req.query.search;
   let query = {};
@@ -36,12 +31,10 @@ app.get("/billing-list", async (req, res) => {
       },
     };
   }
-  console.log(search);
-
-  console.log(query);
-  console.log(search);
-  const courser = AllBilligs.find(query);
-  const result = await courser.toArray();
+  console.log({ search });
+  console.log({ query });
+  console.log({ search });
+  const result = await AllBilligs.find(query).sort({ submit: -1 }).toArray();
   res.send(result);
 });
 
